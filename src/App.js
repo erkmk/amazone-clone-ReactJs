@@ -7,6 +7,7 @@ import Checkout from "./Checkout";
 import Login from "./Login";
 import { auth } from "./firebase";
 import { useStateValue } from "./StateProvider";
+import Payment from "./Payment";
 //intalled react-router-dom
 
 function App() {
@@ -48,6 +49,10 @@ function App() {
           <Route path="/checkout">
             <Header />
             <Checkout />
+          </Route>
+          <Route path="/payment">
+            <Header />
+            <Payment />
           </Route>
           {/* Home Page: This is default page */}
           <Route path="/">
