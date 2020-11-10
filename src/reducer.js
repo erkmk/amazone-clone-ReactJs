@@ -18,6 +18,12 @@ const reducer = (state, action) => {
         basket: [...state.basket, action.item],
       };
 
+    case "EMPTY_BASKET":
+      return {
+        ...state,
+        basket: [],
+      };
+
     case "REMOVE_FROM_BASKET":
       //it will remove all the same product on checkout page but we want to remove only the product on which we press the reomve button.
       // return {
