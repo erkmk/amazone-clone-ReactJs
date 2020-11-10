@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import "./Payment.css";
 import { useStateValue } from "./StateProvider";
 import CheckoutProduct from "./CheckoutProduct";
@@ -6,10 +6,11 @@ import { Link, useHistory } from "react-router-dom";
 import { CardElement, useElements, useStripe } from "@stripe/react-stripe-js";
 import CurrencyFormat from "react-currency-format";
 import { getBasketTotal } from "./reducer";
+import axios from "./axios";
 
 function Payment() {
   const [{ basket, user }, dispatch] = useStateValue();
-  //   const history = useHistory();
+  const history = useHistory();
   const stripe = useStripe();
   const elements = useElements();
 
@@ -17,13 +18,44 @@ function Payment() {
   const [processing, setProcessing] = useState(false);
   const [error, setError] = useState(null);
   const [disabled, setDisabled] = useState(true);
-  
+  const [clientSecret, setClientSecret] = useState(true);
+
+  useEffect(() => {
+    //generate the special stripe secret to charge a customer
+    const getClientSecret = async () => {
+      const response = await axios({
+        method: "post",
+        //stripe expects the total in currencies subunits
+        //for 10$ you have to sent 1000
+        url: `/payments/create?total=${getBasketTotal(basket) * 100}`,
+      });
+
+      setClientSecret(response.data.clientSecret);
+    };
+
+    getClientSecret();
+  }, [basket]);
 
   const handleSubmit = async (event) => {
     //do all the stripe fancy stuff...
     event.preventDefault();
     setProcessing(true);
 
+    const payload = await stripe
+      .confirmCardPayment(clientSecret, {
+        payment_method: {
+          card: elements.getElement(CardElement),
+        },
+      })
+      .then(({ paymentIntent }) => {
+        //paymentIntent = payment confirmation
+
+        setSucceeded(true);
+        setError(null);
+        setProcessing(false);
+
+        history.replace("/orders");
+      });
   };
 
   const handleChange = (event) => {
