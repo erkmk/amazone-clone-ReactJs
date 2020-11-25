@@ -11,10 +11,9 @@ import Payment from "./Payment";
 import { loadStripe } from "@stripe/stripe-js";
 import { Elements } from "@stripe/react-stripe-js";
 import Orders from "./Orders";
-//intalled react-router-dom
+//installed react-router-dom
 
-const promise = loadStripe(
-  "pk_test_51Hlmg7FtRSQUe9NkYNhQ3pJ2lPiMzaSUWZ6gktro0qDKMf7aPYAzTOa7zcf7MEAmtRtXnL3jyuKy0oFPBKbb0YL600cP3IYsvq"
+const promise = loadStripe(// "enter you publishable key here"
 );
 
 function App() {
